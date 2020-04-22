@@ -1,35 +1,20 @@
 import React from "react";
-import { TextField, MenuItem } from "@material-ui/core";
-import { Form, Formik, Field } from "formik";
+import { TextField } from "@material-ui/core";
+import { useForm } from "react-hook-form";
 
 function App() {
-  const initialValues = {
-    name: "",
-    surname: "",
-    email: "",
-    age: "",
-    userType: "",
-  };
+  const { register, handleSubmit, watch, errors } = useForm();
+
+  const onSubmit = data => { console.log(data) }
 
   return (
-    <div>
-    <h2>Register</h2>
-      <Formik initialValues={initialValues} onSubmit={() => {}}>
-        {({ values }) => (
-          <Form>
-            <Field name="name" as={TextField} label="Name" />
-            <Field name="surname" as={TextField} label="Surname"/>
-            <Field name="email" as={TextField} label="Email" type="email"/>
-            <Field name="age" type="number" as={TextField} label="Age" />
-            <Field name="userType" as={TextField} select label="User Type">
-              <MenuItem value={0}>Administrator</MenuItem>
-              <MenuItem value={1}>Normal</MenuItem>
-            </Field>
-            <pre>{JSON.stringify(values, null, 4)}</pre>
-          </Form>
-        )}
-      </Formik>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)}>
+    <TextField name="userName" label='Username' error={!!errors.userName} helperText={errors.userName && 'username required'} inputRef={register({ required:true,pattern: /^[A-Za-z]+$/i })}/>
+    <input name="firstName" ref={register({ required: true, maxLength: 20 })} />
+    <input name="lastName" ref={register({ pattern: /^[A-Za-z]+$/i })} />
+    <input name="age" type="number" ref={register({ min: 18, max: 99 })} />
+    <input type="submit" />
+  </form>
   );
 }
 
